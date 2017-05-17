@@ -9,20 +9,21 @@ var app = express();
 var server = http.createServer(app);
 var io = socketIO(server);
 
+//socket.emit - single
+//io.emit - everyone
 
 app.use(express.static(publicPath));
 
 io.on('connection', (socket) => {
 	console.log('New user connected');
 
-	socket.emit('newMessage', {
-		from: 'Brian',
-		text: 'Hey',
-		createdAt: 123
-	});
-
 	socket.on('createMessage', (message) => {
 		console.log('createMessage', message);
+		io.emit('newMessage', {
+			from: message.from,
+			text: message.text,
+			createdAt: new Date().getTime()
+		});
 	});
 
 	socket.on('disconnect', () => {
